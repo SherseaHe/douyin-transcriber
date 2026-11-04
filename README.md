@@ -1,6 +1,27 @@
-# Douyin Transcriber
+# Douyin Transcriber：抖音视频转文字与口播文案提取 Skill
 
-把抖音分享链接或本地音视频转成口播文字的 Agent Skill，也可以直接作为 Python CLI 使用。使用 FFmpeg 提取音频，通过豆包录音文件识别极速版生成 TXT、Markdown 和 JSON。
+中文 | [English](README.en.md) · [安装配置](docs/configuration.md) · [Agent Skill](SKILL.md) · [问题反馈](https://github.com/SherseaHe/douyin-transcriber/issues)
+
+**Douyin Transcriber 是一个 MIT 开源的抖音语音转写工具，同时提供 Agent Skill 和 Python CLI。** 输入抖音分享链接或本地音视频，使用 FFmpeg 与豆包 ASR 提取口播文案，输出 TXT、Markdown 和 JSON。适合整理视频逐字稿、提取口播素材，以及为后续内容总结提供原文。
+
+An open-source **Douyin video-to-text Agent Skill and Python CLI** for speech transcription with FFmpeg and Doubao ASR. Converts spoken audio into TXT, Markdown and JSON; includes verified caching and an Agent-assisted browser fallback.
+
+## 项目速览
+
+| 项目 | 说明 |
+| --- | --- |
+| 项目名称 | Douyin Transcriber / `douyin-transcriber` |
+| 主要用途 | 抖音视频转文字、口播文案提取、本地音视频转写 |
+| 使用方式 | 支持 SKILL.md 的 Agent（已在 Codex 场景实测）或独立 Python CLI |
+| 输入 | 抖音分享文本/短链/完整链接、本地音视频、公开 MP3/WAV/OGG URL |
+| 输出 | TXT 逐字稿、Markdown 逐字稿、ASR JSON、运行摘要 JSON |
+| 语音识别 | 火山引擎豆包录音文件识别极速版 `volc.bigasr.auc_turbo` |
+| 配置 | Python 3.10+、FFmpeg/ffprobe、ASR Key；抖音直接下载另需 yt-dlp |
+| 平台 | macOS / Linux；Windows 需要 WSL，原生 Windows 不支持 |
+| 费用 | 代码采用 MIT 免费开源；云端 ASR 按服务账户计费 |
+| 能力边界 | 处理语音；不做画面理解、OCR、自动翻译或 SRT 导出 |
+
+快速导航：[安装](#安装与配置) · [CLI 用法](#命令行使用) · [输出与缓存](#输出与缓存) · [常见问答](#常见问答) · [配置与排障](docs/configuration.md)
 
 ## 能做什么
 
@@ -75,6 +96,36 @@ Python 脚本仅依赖标准库。FFmpeg/ffprobe 和 yt-dlp 是外部命令；�
 
 浏览器播放正常不代表 CLI 能直接下载。平台可能分离音视频：下载前应核对时长和音轨。签名地址只能临时保存，完成后删除；公开 Skill 不预先授予 Cookie 或浏览器数据访问权限。
 
+## 常见问答
+
+### 如何把抖音视频转成文字？
+
+安装本项目的 Python、FFmpeg 和 yt-dlp 依赖，配置豆包 ASR Key，然后运行 `python3 scripts/douyin_transcribe.py '抖音分享链接'`。CLI 会尝试获取媒体、提取音频并转写。平台阻止直接下载时，需要使用浏览器兜底或提供本地音视频文件。
+
+### 可以提取抖音视频文案吗？
+
+可以提取视频中**说出来的口播文案**，生成逐字稿。画面字幕、图文帖文字和没有声音的文字内容不在转写范围内；这些需要另行使用 OCR 工具。
+
+### 这是免费、离线运行的工具吗？
+
+代码以 MIT 许可证开源。音频提取在本地进行，但识别需要把音频发送到火山引擎豆包 ASR，可能产生费用。项目没有本地 Whisper 后端，完整转写不能离线完成。回归测试使用模拟 ASR，可以离线运行。
+
+### 能在 Codex 或其他 AI Agent 中使用吗？
+
+仓库提供 `SKILL.md` 和 `agents/openai.yaml`，已在 Codex 场景实测。其他支持 SKILL.md 的客户端可按各自安装规则加载，浏览器工具和环境变量需要另外配置；不依赖特定浏览器插件。也可以完全不使用 Agent，直接运行 Python CLI。
+
+### 支持 TikTok、B站或小红书链接吗？
+
+当前链接解析只针对抖音（Douyin），不支持国际版 TikTok、B站或小红书链接。对合法取得的本地音视频文件，可以使用相同的转写流程。
+
+### 如何让 AI 总结抖音视频？
+
+先用本项目生成 `transcript.md`，再让 Agent 根据逐字稿总结重点。语音转写和内容总结是两个步骤；基于逐字稿的摘要不能替代对视频画面的分析。
+
+### 为什么浏览器能播放，命令行却提示 403？
+
+浏览器播放与直接下载使用的请求环境不同，抖音可能要求验证或新的 Cookie。项目提供经过用户授权的浏览器媒体提取流程，但不会自动绕过验证，也不会默认读取 Cookie。参见 [浏览器兜底](SKILL.md#browser-fallback) 和 [故障排查](docs/configuration.md#常见问题)。
+
 ## 测试
 
 ```bash
@@ -83,7 +134,9 @@ python3 -B scripts/test_transcribe.py
 
 测试不需要 API Key、不访问抖音、不调用 ASR；需要 FFmpeg/ffprobe。覆盖缓存串稿、内容更新、损坏结果、失败重跑、独立下载目录、半成品清理、并发锁及真实音频提取。
 
-曾对约 16 分 30 秒的视频完成浏览器音频兜底与豆包转写，并验证重复运行命中缓存。该实测不代表抖音链接始终可直接下载；识别质量仍可能受语言、背景音乐和术语影响。
+2026-11-04 的一次人工实测：约 16 分 30 秒英文音频，经浏览器兜底获取音轨后，豆包 ASR 返回 179 个语音片段，识别请求耗时约 10.7 秒；重复运行命中缓存。这是单次观察，不是性能基准，10.7 秒不包括浏览器操作与下载。未测量词错率，也不保证其他链接的下载成功率或识别质量。第三方视频及转写内容未收录到仓库。
+
+可复现的离线验证见 [回归测试源码](scripts/test_transcribe.py)。项目事实与能力边界以本仓库 README、配置文档和代码为准。
 
 ## 数据与费用
 

@@ -1,4 +1,8 @@
-# 安装与配置
+# Douyin Transcriber 安装配置：抖音转文字 Skill 与豆包 ASR
+
+[项目介绍](../README.md) · [English guide](../README.en.md) · [Agent 工作流](../SKILL.md)
+
+本页说明如何安装抖音口播转写 Skill、配置 `VOLC_ASR_API_KEY`，并验证本地文件与抖音链接转写。
 
 ## 1. 准备运行环境
 

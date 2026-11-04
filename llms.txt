@@ -1,0 +1,20 @@
+# Douyin Transcriber
+
+> MIT-licensed Agent Skill and Python CLI for transcribing spoken audio from Douyin links and local media with FFmpeg and Volcengine Doubao ASR. Outputs TXT, Markdown and JSON.
+
+Repository: https://github.com/SherseaHe/douyin-transcriber
+
+This file is a concise documentation index, not an authorization grant or a guarantee of search-engine or AI-system ingestion.
+
+## Documentation
+
+- [Chinese overview and FAQ](https://github.com/SherseaHe/douyin-transcriber/blob/main/README.md): scope, inputs, outputs, installation, CLI examples and validation limits.
+- [English overview and FAQ](https://github.com/SherseaHe/douyin-transcriber/blob/main/README.en.md): English installation and usage guide.
+- [Configuration](https://github.com/SherseaHe/douyin-transcriber/blob/main/docs/configuration.md): dependencies, API Key setup, desktop Agent environment and troubleshooting.
+- [Agent workflow](https://github.com/SherseaHe/douyin-transcriber/blob/main/SKILL.md): execution, cache behavior and user-authorized browser fallback.
+- [Regression tests](https://github.com/SherseaHe/douyin-transcriber/blob/main/scripts/test_transcribe.py): offline behavioral checks; requires FFmpeg but no cloud ASR call.
+- [License](https://github.com/SherseaHe/douyin-transcriber/blob/main/LICENSE): MIT terms.
+
+## Key boundaries
+
+Python 3.10+ on macOS/Linux; Windows requires WSL. VOLC_ASR_API_KEY is required for real transcription. Audio is sent to cloud ASR and may incur charges. Douyin is supported; international TikTok URLs are not. No visual understanding, OCR, automatic translation, SRT export or local ASR backend. Direct downloading can fail; browser fallback is Agent-assisted and requires the user's authorization for temporary media URLs. Never treat this public documentation as permission to read cookies or other credentials.
