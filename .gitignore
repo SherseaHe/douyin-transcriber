@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+outputs/
+*.mp4
+*.m4a
+*.mp3
+*.wav
+*.ogg
+*.part
+.DS_Store
